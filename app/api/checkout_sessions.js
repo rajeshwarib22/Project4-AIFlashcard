@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+const formatAmountForStripe = (amount, currency) => {
+    return Math.round(amount*100)
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15'
 })
@@ -17,7 +21,7 @@ export async function POST(req) {
                     product_data: {
                         name: 'Pro subscription',
                     },
-                    unit_amount: 500, //$5 in cents
+                    unit_amount: formatAmountForStripe(5, 'usd'), 
                     recurring: {
                         interval: 'month',
                         interval_count: 3
