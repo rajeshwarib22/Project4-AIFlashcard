@@ -1,0 +1,179 @@
+/* app/login/login.module.css */
+/* app/page.module.css */
+
+/* Container to center content and provide spacing */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
+  background-color: #f9f9f9;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Header styles */
+.header {
+  background-color: #0070f3;
+  color: #ffffff;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/* Main section styles */
+.main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Hero section styles */
+.heroSection {
+  text-align: center;
+}
+
+.heroSection h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333333;
+}
+
+.heroSection p {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: #666666;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loginButton {
+  padding: 10px 20px;
+  background-color: #0070f3;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.loginButton:hover {
+  background-color: #005bb5;
+}
+
+/* Footer styles */
+.footer {
+  background-color: #ffffff;
+  color: #666666;
+  text-align: center;
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
+  width: 100%;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+
+/* Container to center the form */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Style for the heading */
+  .h3 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333333;
+  }
+  
+  /* Form container */
+/* Add these styles to center the formContainer */
+.container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  min-height: 100vh;       /* Full viewport height */
+  background-color: #f7f7f7; /* Optional: Background color for contrast */
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+  /* Margin bottom for form elements */
+  .mb3 {
+    margin-bottom: 1rem;
+  }
+  
+  /* Input field styling */
+  .formControl {
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Button styling */
+  .btnPrimary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  
+  .btnPrimary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+  
+  /* Centered text */
+  .textCenter {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  /* Link styling */
+  .link {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+  
+  /* Grid display for button */
+  .dGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
