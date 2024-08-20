@@ -1,6 +1,6 @@
 "use client"; // Ensure the component is treated as a Client Component
 
-import React, { useState } from "react"; // Import useState from React
+import React, { useState } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -8,6 +8,7 @@ import {
 import { auth, db } from "@/firebase";
 import { setDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./login.module.css"; // Import the updated CSS module
 
@@ -17,13 +18,14 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("User logged in successfully");
-      window.location.href = "/profile";
+      router.push("/profile"); // Redirect to profile page
       toast.success("User logged in successfully", {
         position: "top-center",
       });
@@ -52,7 +54,7 @@ export default function AuthPage() {
       toast.success("User registered successfully", {
         position: "top-center",
       });
-      window.location.href = "/profile";
+      router.push("/profile"); // Redirect to profile page
     } catch (error) {
       console.error(error.message);
       toast.error(error.message, {
@@ -68,7 +70,6 @@ export default function AuthPage() {
       </header>
       <main className={styles.main}>
         <section className={styles.heroSection}>
-          {" "}
           <h2>Enhance Your Learning with Flashcards</h2>
           <p>
             Practice and master your subjects with custom flashcards. Sign in to

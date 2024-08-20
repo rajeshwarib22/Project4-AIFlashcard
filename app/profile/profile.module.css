@@ -1,62 +1,99 @@
-/* Container for the profile page */
 .profileContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f7f7f7; /* Lighter cream color */
-    min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 20px;
+width: 10;
+background-color: #f7f7f7; 
+min-height: 100vh;
 }
 
-/* Navbar style */
+
 .navbar {
-    background-color: #d3d3d3; /* Grey background for the navbar */
-    padding: 10px 20px;
-    width: 100%;
+background-color: #f2ecec; 
+padding: 10px 20px;
+width: 100%;
 }
 
 .navbar .navbar-brand {
-    font-size: 1.25rem;
+font-size: 1.25rem;
 }
 
 .navbar .navbar-nav .nav-item .nav-link {
-    color: #000; /* Black text color for links */
+color: #000; 
 }
 
 .navbar .navbar-nav .nav-item .nav-link:hover {
-    color: #007bff; /* Highlight color on hover */
+color: #007bff; 
 }
 
 .logoutButton {
-    background-color: grey; /* Light grey background for the logout button */
-    color: #000; /* Black text color */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-left: auto; /* Aligns button to the right */
+background-color: rgb(222, 71, 71); 
+color: #000; 
+border: none;
+border-radius: 5px;
+padding: 10px 20px;
+font-size: 1rem;
+cursor: pointer;
+transition: background-color 0.3s;
+margin-left: auto; 
 }
 
 .logoutButton:hover {
-    background-color: #b0b0b0; /* Slightly darker grey on hover */
+background-color: #b41414; 
 }
 
-/* User details section style */
+
 .userDetails {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(243, 240, 240, 0.995);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
+background: #ffffff;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 4px 8px rgba(243, 240, 240, 0.995);
+width: 100%;
+align-items: center;
 }
 
-/* Welcome heading style */
+
 .welcomeHeading {
-    font-size: 1.5rem;
-    color: #007bff;
-    margin-bottom: 20px;
+font-size: 1.5rem;
+color: #007bff;
+margin-bottom: 20px;
+}
+
+.flashcardsContainer {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+}
+
+.cardFront, .cardBack {
+background: white;
+border: 1px solid #ddd;
+border-radius: 8px;
+padding: 20px;
+width: 400px;
+height: 300px;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+cursor: pointer;
+}
+
+.cardBack {
+transform: rotateY(0deg);
+}
+
+.cardFront .question,
+.cardFront .category {
+margin-bottom: 10px; 
+}
+
+.cardFront .category {
+margin-top: 30px; 
+}
+
+.cardFront strong {
+display: inline-block;
+width: auto; 
 }

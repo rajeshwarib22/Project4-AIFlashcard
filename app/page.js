@@ -13,6 +13,9 @@ export default function HomePage() {
         if (!user) {
           // Redirect to the login page if the user is not authenticated
           router.push("/login");
+        } else {
+          // Redirect authenticated users to the profile page
+          router.push("/profile");
         }
       });
 
