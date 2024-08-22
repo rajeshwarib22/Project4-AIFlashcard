@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { setDoc, doc } from "firebase/firestore";
@@ -14,6 +15,7 @@ import styles from "./login.module.css"; // Import the updated CSS module
 
 export default function AuthPage() {
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
@@ -25,10 +27,10 @@ export default function AuthPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("User logged in successfully");
-      router.push("/profile"); // Redirect to profile page
       toast.success("User logged in successfully", {
         position: "top-center",
       });
+      router.push("/profile"); // Redirect to profile page
     } catch (error) {
       console.error(error.message);
       toast.error(error.message, {
@@ -63,6 +65,29 @@ export default function AuthPage() {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log("Password reset email sent");
+      toast.success("Password reset email sent", {
+        position: "top-center",
+      });
+      setIsForgotPassword(false); // Switch back to login screen after sending reset email
+      setIsRegistering(false); // Ensure it's not in register mode
+    } catch (error) {
+      console.error(error.message);
+      toast.error(error.message, {
+        position: "bottom-center",
+      });
+    }
+  };
+
+  const handleFormSwitch = () => {
+    setIsRegistering(!isRegistering);
+    setIsForgotPassword(false);
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -75,10 +100,24 @@ export default function AuthPage() {
             Practice and master your subjects with custom flashcards. Sign in to
             get started!
           </p>
-          <h3 className={styles.h3}>{isRegistering ? "Sign Up" : "Login"}</h3>
+          <h3 className={styles.h3}>
+            {isForgotPassword
+              ? "Reset Password"
+              : isRegistering
+              ? "Sign Up"
+              : "Login"}
+          </h3>
           <div className={styles.formContainer}>
-            <form onSubmit={isRegistering ? handleRegister : handleLogin}>
-              {isRegistering && (
+            <form
+              onSubmit={
+                isForgotPassword
+                  ? handleForgotPassword
+                  : isRegistering
+                  ? handleRegister
+                  : handleLogin
+              }
+            >
+              {isRegistering && !isForgotPassword && (
                 <>
                   <div className={`mb-3 ${styles.mb3}`}>
                     <label className={`form-label ${styles.label}`}>
@@ -120,47 +159,80 @@ export default function AuthPage() {
                   required
                 />
               </div>
-              <div className={`mb-3 ${styles.mb3}`}>
-                <label className={`form-label ${styles.label}`}>Password</label>
-                <input
-                  type="password"
-                  className={`form-control ${styles.formControl}`}
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
+              {!isForgotPassword && (
+                <div className={`mb-3 ${styles.mb3}`}>
+                  <label className={`form-label ${styles.label}`}>
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    className={`form-control ${styles.formControl}`}
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
               <div className={styles.dGrid}>
                 <button
                   type="submit"
                   className={`btn btn-primary ${styles.btnPrimary}`}
                 >
-                  {isRegistering ? "Sign Up" : "Login"}
+                  {isForgotPassword
+                    ? "Reset Password"
+                    : isRegistering
+                    ? "Sign Up"
+                    : "Login"}
                 </button>
               </div>
+              {!isForgotPassword && (
+                <p className={styles.textCenter}>
+                  <a
+                    href="#"
+                    className={`btn btn-link ${styles.link}`}
+                    onClick={() => setIsForgotPassword(true)}
+                  >
+                    Forgot Password?
+                  </a>
+                </p>
+              )}
               <p className={styles.textCenter}>
-                {isRegistering ? (
+                {isForgotPassword ? (
                   <span>
-                    Already registered?{" "}
                     <a
                       href="#"
                       className={`btn btn-link ${styles.link}`}
-                      onClick={() => setIsRegistering(false)}
+                      onClick={() => setIsForgotPassword(false)}
                     >
-                      Login
+                      Back to Login
                     </a>
                   </span>
                 ) : (
                   <span>
-                    New user?{" "}
-                    <a
-                      href="#"
-                      className={`btn btn-link ${styles.link}`}
-                      onClick={() => setIsRegistering(true)}
-                    >
-                      Register
-                    </a>
+                    {isRegistering ? (
+                      <>
+                        Already registered?{" "}
+                        <a
+                          href="#"
+                          className={`btn btn-link ${styles.link}`}
+                          onClick={handleFormSwitch}
+                        >
+                          Login
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        New user?{" "}
+                        <a
+                          href="#"
+                          className={`btn btn-link ${styles.link}`}
+                          onClick={handleFormSwitch}
+                        >
+                          Register
+                        </a>
+                      </>
+                    )}
                   </span>
                 )}
               </p>
