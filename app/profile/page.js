@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import styles from "./profile.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { loadStripe } from "@stripe/stripe-js";
+import { Modal, Box, TextField, Typography, Stack, Button } from "@mui/material";
 
 // Add your Stripe publishable key here
 const stripePromise = loadStripe(
@@ -29,6 +30,9 @@ export default function Profile() {
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [flashcards, setFlashcards] = useState([]);
+  const [aicards, setAICards] = useState([]);
+  const [text, setText] = useState('')
+  const [open, setOpen] = useState(false)
   const [newCard, setNewCard] = useState({
     question: "",
     answer: "",
@@ -181,9 +185,61 @@ export default function Profile() {
     }
   };
 
+  const handleAddAICards = async() => {
+    try {
+      const user = auth.currentUser
+      aicards.forEach(async (card) => {
+        await addDoc(collection(db, "flashcards"), {
+          userId: user.uid,
+          question: card.question,
+          answer: card.answer,
+          category: card.category,
+          createdAt: new Date(),
+        })
+        setNewCard({ question: "", answer: "", category: "" })
+        setSelectedCategory(newCard.category); // Set selected category
+        fetchUserFlashcards(user.uid)
+      })  
+    }catch (error) {
+      console.error(
+        editingCard ? "Error updating flashcard:" : "Error adding flashcard:",
+        error.message
+      );
+    }
+  }
+
+  const handleAISubmit = async() => {
+    if (!text.trim()){
+      alert('Please enter some text to generate flashcards.')
+      return
+    }
+
+    try {
+      const response = await fetch('/api', {
+        method: 'POST',
+        body: text,
+      })
+
+      if (!response.ok){
+        throw new Error('Failed to generate flashcards')
+      }
+
+      const data = await response.json()
+      setAICards(data)
+      handleAddAICards()
+      handleClose()
+    } catch (error) {
+      console.error('Error generating flashcards:', error)
+      alert('An error occurred while generating flashcards. Please try again.')
+    }
+  }
+
   const handleCardFlip = (id) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const filteredFlashcards = flashcards.filter((card) => {
     const matchesCategory =
@@ -211,6 +267,9 @@ export default function Profile() {
           Manage Subscription
         </button>
         <div className="d-flex ms-auto">
+          <Button variant = "contained" color = "primary" onClick = {handleOpen}>
+            ✨ Generate AI Flashcards
+          </Button>
           <button className={styles.logoutButton} onClick={handleLogout}>
             Logout
           </button>
@@ -280,6 +339,46 @@ export default function Profile() {
               </form>
               <br /> <br />
               <h3>Your Flashcards</h3>
+              <Modal open = {open} onClose = {handleClose}> 
+                <Box
+                  position = "absolute"
+                  top = "50%"
+                  left = "50%"
+                  width = {800}
+                  bgcolor = "white"
+                  border = "2px solid #000"
+                  boxShadow = {24}
+                  p={4}
+                  display = "flex"
+                  flexDirection = "column"
+                  gap = {3} 
+                  sx = {{
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                >
+                  <Typography variant = "h2">AI Flashcard Generation</Typography>
+                  <Typography variant = "h3"> Add Text</Typography>
+                  <Stack width = "100%" direction = "column" spacing = {2}>
+                    <TextField
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      label="Enter text"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      variant="outlined"
+                      sx={{ mb: 2 }}
+                    />
+                    <Stack width = "100%" direction = "column" spacing = {2}>
+                      <Button variant = "outlined" onClick = {handleClose}> Cancel</Button>
+                      <Button variant = "contained" onClick={() => {
+                        handleAISubmit()
+                        
+                      }}>Generate</Button>
+                    </Stack>
+                  </Stack>
+                </Box>
+              </Modal>
               {/* Dropdown for selecting category */}
               <div className={`mb-3 ${styles.mb3}`}>
                 <label className={`form-label ${styles.label}`}>
