@@ -1,47 +1,28 @@
-import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const formatAmountForStripe = (amount, currency) => {
-    return Math.round(amount*100)
-}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2022-11-15'
-})
-
-export async function POST(req) {
+export default async function handler(req, res) {
+  if (req.method === "POST") {
     try {
-       const params = {
-        mode: 'subscription',
-        payment_method_types: ['card'],
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "subscription",
         line_items: [
-            {
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: 'Pro subscription',
-                    },
-                    unit_amount: formatAmountForStripe(5, 'usd'), 
-                    recurring: {
-                        interval: 'month',
-                        interval_count: 3
-                    },
-                },
-                quantity: 1
-            }
+          {
+            price: process.env.STRIPE_PRICE_ID, // Replace with your price ID from the Stripe Dashboard
+            quantity: 1,
+          },
         ],
-        success_url: `${req.headers.get('Referer')}result?session_id=${CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.get('Referer')}result?session_id=${CHECKOUT_SESSION_ID}`,
-       }
-
-       const checkoutSession = await stripe.checkout.sessions.create(params)
-
-       return NextResponse.json(checkoutSession, {status: 200})
-    } catch (error) {
-        console.error('Error creating checkout session:', error)
-        return new NextResponse(JSON.stringify({error: {message: error.message}}), {
-            status: 500,
-        }
-        )
+        success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/canceled`,
+      });
+      res.status(200).json({ sessionId: session.id });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
+  } else {
+    res.setHeader("Allow", "POST");
+    res.status(405).end("Method Not Allowed");
+  }
 }

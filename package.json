@@ -13,6 +13,7 @@
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^5.16.7",
+    "@stripe/stripe-js": "^4.3.0",
     "bootstrap": "^5.3.3",
     "dotenv": "^16.4.5",
     "firebase": "^10.13.0",
@@ -22,7 +23,7 @@
     "react-card-flip": "^1.2.3",
     "react-dom": "^18.3.1",
     "react-toastify": "^10.0.5",
-    "stripe": "^16.7.0"
+    "stripe": "^16.8.0"
   },
   "devDependencies": {
     "eslint": "^8",

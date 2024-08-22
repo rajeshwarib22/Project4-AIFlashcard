@@ -18,6 +18,12 @@ import { auth, db } from "@/firebase";
 import { useRouter } from "next/navigation";
 import styles from "./profile.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Add your Stripe publishable key here
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 export default function Profile() {
   const [userDetails, setUserDetails] = useState(null);
@@ -31,7 +37,11 @@ export default function Profile() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [flipped, setFlipped] = useState({}); // Track flipped state of cards
   const [editingCard, setEditingCard] = useState(null); // Track card being edited
+  const [searchTerm, setSearchTerm] = useState(""); // Track search input
+
   const router = useRouter();
+
+  const categories = ["Math", "Science", "History", "Literature"]; // Add more categories as needed
 
   const fetchUserFlashcards = async (userId) => {
     try {
@@ -175,12 +185,31 @@ export default function Profile() {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const filteredFlashcards = flashcards.filter((card) => {
+    const matchesCategory =
+      selectedCategory === "" || card.category === selectedCategory;
+    const matchesSearchTerm =
+      searchTerm === "" ||
+      card.question.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearchTerm;
+  });
+
+  const handleManageSubscription = async () => {
+    window.open("https://buy.stripe.com/test_aEU4iB9kNdj01c4144", "_blank");
+  };
+
   return (
     <div className={styles.profilecontainer}>
       <nav className={`navbar navbar-expand-lg ${styles.navbar}`}>
         <a className="navbar-brand" href="#">
           CardCrafter
         </a>
+        <button
+          className={`btn btn-warning ${styles.manageSubscriptionButton}`}
+          onClick={handleManageSubscription}
+        >
+          Manage Subscription
+        </button>
         <div className="d-flex ms-auto">
           <button className={styles.logoutButton} onClick={handleLogout}>
             Logout
@@ -195,7 +224,6 @@ export default function Profile() {
             <div className={styles.userDetails}>
               <h2>Welcome, {userDetails.firstName}!</h2>
               <h3>Create your own flashcards!!</h3>
-
               <form onSubmit={handleAddCard}>
                 <div className={`mb-3 ${styles.mb3}`}>
                   <label className={`form-label ${styles.label}`}>
@@ -236,10 +264,11 @@ export default function Profile() {
                     required
                   >
                     <option value="">Select a category</option>
-                    <option value="Math">Math</option>
-                    <option value="Science">Science</option>
-                    <option value="History">History</option>
-                    {/* Add more categories as needed */}
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <button
@@ -249,8 +278,26 @@ export default function Profile() {
                   {editingCard ? "Update Flashcard" : "Add Flashcard"}
                 </button>
               </form>
-
+              <br /> <br />
               <h3>Your Flashcards</h3>
+              {/* Dropdown for selecting category */}
+              <div className={`mb-3 ${styles.mb3}`}>
+                <label className={`form-label ${styles.label}`}>
+                  Filter by Category
+                </label>
+                <select
+                  className={`form-control ${styles.formControl}`}
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className={styles.flashcardsContainer}>
                 {flashcards.length ? (
                   flashcards
