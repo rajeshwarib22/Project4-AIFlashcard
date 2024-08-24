@@ -57,10 +57,14 @@ export async function POST(req) {
       flashcards = JSON.parse(flashcardsResponse);
     } catch (error) {
       console.error("Error parsing JSON:", error);
-      return NextResponse.json({ error: "Invalid JSON response from OpenAI." });
+      return NextResponse.json(
+        { error: "Invalid JSON response from OpenAI." },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json(flashcards.flashcards);
+    // Return the flashcards
+    return NextResponse.json(flashcards);
   } catch (error) {
     console.error("Error creating chat completion:", error);
     return NextResponse.json(
